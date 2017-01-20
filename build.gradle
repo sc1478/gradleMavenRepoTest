@@ -1,0 +1,69 @@
+buildscript {
+	repositories {
+//		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+
+	dependencies {
+		classpath 'com.netflix.nebula:gradle-ospackage-plugin:4.3.0'
+	}
+}
+
+plugins {
+	id 'com.gradle.plugin-publish' version '0.9.3'
+	id "groovy"
+	id "maven-publish"
+}
+  
+repositories {
+		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+}
+dependencies {
+	compile gradleApi()
+	compile 'com.netflix.nebula:gradle-ospackage-plugin:4.3.0'
+}
+
+
+apply plugin: "nebula.ospackage"
+apply plugin: "groovy"
+apply plugin: "java"
+
+
+group 'com.whatever.dummy'
+version '1.0.0'
+
+pluginBundle {
+	plugins {
+		dummyRpm {
+			id = 'dummy.rpm'
+			displayName = "RPM Packaging Plugin customized for dummies"
+			description = 'Test Case for plugin dependencies'
+		}
+	}
+}
+
+
+project.tasks.javadoc.onlyIf({false})
+project.tasks.groovydoc.onlyIf({false})
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			artifactId "plugin"
+		}
+	}
+	def home=System.properties['user.home']
+	repositories {
+		maven {
+			name = 'dummy'
+			url = "${home}/dummyrepo/.m2"
+		}
+	}
+}
+
+
